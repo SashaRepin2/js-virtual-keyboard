@@ -1,6 +1,8 @@
+import BUTTON_TYPES from "../utils/buttonTypes";
 import KeyboardButton from "./Button/KeyboardButton";
-import { Input, InputCaret } from "./Input/Input";
+import { Input } from "./Input/Input";
 import "./Keyboard.scss";
+import Panel from "./Panel/Panel";
 
 const defaultOptions = {
   isCanHide: true,
@@ -10,64 +12,119 @@ const defaultOptions = {
   debug: true,
 };
 
+// TODO: Keyboard: caps and shift keyboard state X
+// TODO: Input: when 2 or more keyboards - the event is called several times // Neend fix
+
 export class Keyboard {
   keyboardParentDOM;
   keyboardRootDOM;
   keyboardConfig;
-  activeInput;
   isShifted;
   isCapsed;
 
+  inputObserver;
   keyboardPanel;
   options;
+
+  // Current buttons of keyboard layout
+  buttons;
 
   constructor(keyboardParentDOM, keyboardKeysConfig, options = defaultOptions) {
     if (typeof window === "undefined") return;
 
+    // additional options
     this.options = options;
 
+    // keyboard states
     this.isShifted = this.options.isShifted;
     this.isCapsed = this.options.isCapsed;
+
+    // current buttons of keyboard
+    this.buttons = [];
 
     this.keyboardParentDOM = keyboardParentDOM;
     this.keyboardConfig = keyboardKeysConfig;
 
+    // binds
+    this.onKeyDownHanlder = this.onKeyDownHanlder.bind(this);
+    this.render = this.render.bind(this);
+
     if (this.keyboardParentDOM) {
-      this.initRender();
+      this.render();
     } else {
       throw new Error("Keyboard: the parent DOM element not found");
     }
   }
 
-  keyDown(button) {
+  onKeyDownHanlder(button) {
     if (!button) return;
 
     switch (button.type) {
-      case "SHIFT":
+      case BUTTON_TYPES.SHIFT:
         this.isShifted = !this.isShifted;
-        console.log(this.isShifted);
         break;
-      case "DEFAULT":
-        const value = this.isShifted ? button.shift : button.value;
-        this.activeInput.changeValue(value);
+      case BUTTON_TYPES.CAPSLOCK:
+        this.isCapsed = !this.isCapsed;
+        break;
+      case BUTTON_TYPES.DEFAULT:
+        this.onDefaultKeyPress(button);
+        break;
+      case BUTTON_TYPES.ENTER:
+        this.inputObserver.updateValue("\n");
+        break;
+      case BUTTON_TYPES.TAB:
+        this.inputObserver.updateValue("\t");
+        break;
       default:
+        if (this.options.debug) {
+          console.warn(`Unexpected button type ${button.type}`);
+        }
         break;
     }
+
+    this.rerender();
   }
 
-  initRender() {
+  onEnterPress() {}
+
+  onDefaultKeyPress(button) {
+    // Btn states: btn has shift (shift=caps) value (btn has two value), btn has not shift value (btn has one value)
+    // Get button value
+    const value =
+      (this.isShifted || this.isCapsed) && button.shift
+        ? button.shift
+        : button.value;
+
+    // Update input value
+    this.inputObserver.updateValue(value);
+
+    // Change keyboard state
+    this.isShifted = false;
+    this.rerender();
+  }
+
+  rerender() {
+    // Rerender buttons
+    this.buttons.forEach((btn) =>
+      btn.rerender(this.isShifted || this.isCapsed)
+    );
+  }
+
+  render() {
     // Create root container
     const keyboardRootEl = document.createElement("div");
     keyboardRootEl.classList.add("keyboard");
 
-    // Create active input
-    this.activiInput = new Input();
+    // Create input observer
+    this.inputObserver = new Input();
 
     // Create keyboard panel
-    this.keyboardPanel = new KeyboardPanel(
+    this.keyboardPanel = new Panel(
       keyboardRootEl,
       this.options.isCanClose,
-      this.options.isCanHide
+      this.options.isCanHide,
+      null,
+      this.destroy.bind(this)
     );
 
     // Create board layout
@@ -86,17 +143,19 @@ export class Keyboard {
     this.keyboardRootDOM = keyboardRootEl;
     this.keyboardParentDOM.appendChild(this.keyboardRootDOM);
 
-    console.log("Keyborad has been render");
+    if (this.options.debug) {
+      console.log("Keyborad has been render");
+    }
   }
 
-  // ?? optimization
+  // ?? optimization - code renderColumn = renderLine
   renderLine(lines, parentEl) {
     for (const line of lines) {
       const lineEl = document.createElement("div");
       lineEl.classList.add("line");
 
       if (line.hasOwnProperty("buttons")) {
-        this.renderButtons(line.buttons, lineEl);
+        this.createButtons(line.buttons, lineEl);
       } else {
         this.renderColumn(line.columns, lineEl);
       }
@@ -112,7 +171,7 @@ export class Keyboard {
       columnEl.classList.add("column");
 
       if (column.hasOwnProperty("buttons")) {
-        this.renderButtons(column.buttons, columnEl);
+        this.createButtons(column.buttons, columnEl);
       } else {
         this.renderLine(column.lines, columnEl);
       }
@@ -122,14 +181,16 @@ export class Keyboard {
   }
 
   //
-  renderButtons(buttons, parentDOM) {
+  createButtons(buttons, parentDOM) {
     for (const button of buttons) {
-      const buttonEl = document.createElement("button");
-      buttonEl.textContent = button.value;
-      buttonEl.onclick = (e) => {
-        this.keyDown(button);
-      };
-      parentDOM.appendChild(buttonEl);
+      const btn = new KeyboardButton(
+        parentDOM,
+        button.value,
+        button.shift,
+        button.type,
+        this.onKeyDownHanlder
+      );
+      this.buttons.push(btn);
     }
   }
 
@@ -139,68 +200,12 @@ export class Keyboard {
     this.isShifted = null;
     this.isCapsed = null;
 
-    this.activeInput.destroy();
-    this.activeInput = null;
+    this.keyboardPanel.destroy();
+    this.keyboardPanel = null;
+
+    this.inputObserver.destroy();
+    this.inputObserver = null;
 
     this.keyboardRootDOM.remove();
   }
-}
-
-class KeyboardPanel {
-  parentDOM;
-  rootDOM;
-  isCanHide;
-  isCanClose;
-
-  constructor(parentDOM, isCanClose = true, isCanHide = true) {
-    this.isCanClose = isCanClose;
-    this.isCanHide = isCanHide;
-    this.parentDOM = parentDOM;
-
-    if (this.parentDOM) {
-      this.render();
-    } else {
-      throw new Error("KeyboardPanel: the parent DOM element not found");
-    }
-  }
-
-  closeKeyboard() {}
-
-  hideKeyboard() {
-    this.parentDOM.classList.toggle("hidden");
-  }
-
-  render() {
-    // Create keyboard panel
-    const keyboardPanelEl = document.createElement("div");
-    keyboardPanelEl.classList.add("keyboard__panel");
-
-    if (this.isCanHide) {
-      // Create hide button
-      const hidePanelBtnEl = document.createElement("button");
-      hidePanelBtnEl.textContent = "Hide";
-      hidePanelBtnEl.classList.add("keyboard__hide");
-      hidePanelBtnEl.onclick = () => {
-        this.hideKeyboard();
-      };
-
-      keyboardPanelEl.appendChild(hidePanelBtnEl);
-    }
-
-    if (this.isCanClose) {
-      // Create close button
-      const closePanelBtnEl = document.createElement("button");
-      closePanelBtnEl.textContent = "Close";
-      closePanelBtnEl.classList.add("keyboard__close");
-      closePanelBtnEl.onclick = () => {
-        this.destroy();
-      };
-
-      keyboardPanelEl.appendChild(closePanelBtnEl);
-    }
-
-    this.parentDOM.appendChild(keyboardPanelEl);
-  }
-
-  destroy() {}
 }

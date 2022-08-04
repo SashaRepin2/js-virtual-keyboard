@@ -14,7 +14,13 @@ inputEl1.id = "testInput1";
 root.appendChild(inputEl1);
 
 // Create keyboard
-const start = performance.now();
+let start = performance.now();
 const keyboard = new Keyboard(root, keyboardConfig);
-const end = performance.now();
+let end = performance.now();
 console.log("Time (milliseconds:microseconds):", end - start);
+
+// // Create keyboard1
+// start = performance.now();
+// const keyboard1 = new Keyboard(root, keyboardConfig);
+// end = performance.now();
+// console.log("Time (milliseconds:microseconds):", end - start);
