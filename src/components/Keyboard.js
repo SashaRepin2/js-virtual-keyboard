@@ -12,10 +12,10 @@ const defaultOptions = {
   debug: true,
 };
 
-// TODO: Keyboard: caps and shift keyboard state X
-// TODO: Input: when 2 or more keyboards - event is called several times // Neend fix X/V
-// TODO: need fix when typing and input get focus in start position X
-// TODO: hold key
+// TODO: Keyboard: caps and shift keyboard state // X/V
+// TODO: Input: when 2 or more keyboards - event is called several times // X/V
+// TODO: need fix when typing and input get focus in start position // X
+// TODO: hold key // X
 
 /**
  * The keybaord class (root class)
@@ -93,6 +93,12 @@ export class Keyboard {
       case BUTTON_TYPES.TAB:
         this.inputObserver.updateValue("\t");
         break;
+      case BUTTON_TYPES.BACKSPACE:
+        this.inputObserver.deleteValue();
+        break;
+      case BUTTON_TYPES.DELETE:
+        this.inputObserver.deleteValue(false);
+        break;
       case BUTTON_TYPES.ESC:
         // reset focused input
         this.inputObserver.input = null;
@@ -106,8 +112,6 @@ export class Keyboard {
 
     this.rerender();
   }
-
-  onEnterPress() {}
 
   onDefaultKeyPress(button) {
     // Btn states: btn has shift (shift=caps) value (btn has two value), btn has not shift value (btn has one value)

@@ -14,6 +14,7 @@ const keyboardConfig = {
                 },
                 {
                   value: "ё",
+                  shift: "Ё",
                   type: BUTTON_TYPES.DEFAULT,
                 },
                 {
@@ -75,6 +76,10 @@ const keyboardConfig = {
                   value: "=",
                   shift: "+",
                   type: BUTTON_TYPES.DEFAULT,
+                },
+                {
+                  value: "Backspace",
+                  type: BUTTON_TYPES.BACKSPACE,
                 },
               ],
             },
@@ -152,12 +157,16 @@ const keyboardConfig = {
                   shift: "/",
                   type: BUTTON_TYPES.DEFAULT,
                 },
+                {
+                  value: "Del",
+                  type: BUTTON_TYPES.DELETE,
+                },
               ],
             },
             {
               buttons: [
                 {
-                  value: "CAPS LOCK",
+                  value: "Caps Lock",
                   type: BUTTON_TYPES.CAPSLOCK,
                 },
                 {
@@ -213,6 +222,11 @@ const keyboardConfig = {
                 {
                   value: "э",
                   shift: "Э",
+                  type: BUTTON_TYPES.DEFAULT,
+                },
+                {
+                  value: ";",
+                  shift: ":",
                   type: BUTTON_TYPES.DEFAULT,
                 },
                 {
@@ -309,6 +323,26 @@ const keyboardConfig = {
                 },
                 {
                   value: "PgDn",
+                },
+              ],
+            },
+            {
+              buttons: [
+                {
+                  value: "End",
+                },
+                {
+                  value: "PgDn",
+                },
+              ],
+            },
+            {
+              buttons: [
+                {
+                  value: "Insert",
+                },
+                {
+                  value: "Pause",
                 },
               ],
             },

@@ -16,10 +16,10 @@ class Button {
 
   buttonClassName;
 
-  // State
+  // States
   isShiftOrCaps;
 
-  // Callback
+  // Callbacks
   onKeyClickCallback;
 
   constructor(

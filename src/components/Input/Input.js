@@ -22,33 +22,35 @@ export class Input {
 
     if (!["INPUT", "TEXTAREA"].includes(focusedEl.nodeName)) return;
 
-    // Get currnet cursor pos
-    const { start, end } = this.getCaretPosition(focusedEl);
-    this.startCaretPos = start;
-    this.endCaretPos = end;
-
     this.input = focusedEl;
+
+    // Set current caret position
+    // const { start, end } = this.getCaretPosition();
+    // this.startCaretPos = start;
+    // this.endCaretPos = end;
 
     if (this.debug) {
       console.warn("Input has been changed: ", this.input);
     }
   }
 
-  getCaretPosition(ctrl) {
+  getCaretPosition() {
+    if (!this.input) return;
+
     if (document.selection) {
-      ctrl.focus();
-      var range = document.selection.createRange();
-      var rangelen = range.text.length;
-      range.moveStart("character", -ctrl.value.length);
-      var start = range.text.length - rangelen;
+      this.input.focus();
+      const range = document.selection.createRange();
+      const rangelen = range.text.length;
+      range.moveStart("character", -this.input.value.length);
+      const start = range.text.length - rangelen;
       return {
         start: start,
         end: start + rangelen,
       };
-    } else if (ctrl.selectionStart || ctrl.selectionStart == "0") {
+    } else if (this.input.selectionStart || this.input.selectionStart == "0") {
       return {
-        start: ctrl.selectionStart,
-        end: ctrl.selectionEnd,
+        start: this.input.selectionStart,
+        end: this.input.selectionEnd,
       };
     } else {
       return {
@@ -58,36 +60,68 @@ export class Input {
     }
   }
 
-  setCaretPosition(input, start, end) {
-    if (input.setSelectionRange) {
-      input.focus();
-      input.setSelectionRange(start, end);
+  setCaretPosition(start = 0, end = 0) {
+    if (!this.input) return;
+
+    if (this.input.setSelectionRange) {
+      this.input.focus();
+      this.input.setSelectionRange(start, end);
     } else if (input.createTextRange) {
-      var range = input.createTextRange();
+      const range = input.createTextRange();
       range.collapse(true);
       range.moveEnd("character", end);
       range.moveStart("character", start);
       range.select();
     }
+
+    this.startCaretPos = start;
+    this.endCaretPos = end;
   }
 
-  // Need optimization
+  deleteValue(isBackspaceDelete = true) {
+    if (!this.input || !this.input.value) return;
+
+    const newValueArr = this.input.value.split("");
+    let { start, end } = this.getCaretPosition();
+
+    // If more than 1 character
+    if (end - start > 0) {
+      newValueArr.splice(start, end - start);
+      end = start;
+    } else {
+      if (isBackspaceDelete) {
+        newValueArr.splice(start - 1, 1);
+        start = end -= 1;
+      } else {
+        newValueArr.splice(start, 1);
+      }
+    }
+
+    this.input.value = newValueArr.join("");
+
+    // Update curr caret position
+    this.setCaretPosition(start, end);
+
+    if (this.debug) {
+      console.warn("Input value has been updated:", this.input.value);
+    }
+  }
+
   updateValue(value) {
     if (!this.input || !value) return;
 
-    const { start, end } = this.getCaretPosition(this.input);
+    const { start, end } = this.getCaretPosition();
 
-    // Create new value (for example, added value = N, input value before "ab|c", after "abNc")
-    const newValue =
+    // Create new value (for example, added value = N, | - caret position, input value before "ab|c", after "abNc", )
+    this.input.value =
       this.input.value.slice(0, start) + value + this.input.value.slice(end);
 
-    // Need if value has more then 1 character
-    this.startCaretPos = start + value.length;
-    this.endCaretPos = end + value.length;
+    // Update curr caret position
+    this.setCaretPosition(start + value.length, end + value.length);
 
-    // Get length of value for start and end caret positions
-    this.input.value = newValue;
-    this.setCaretPosition(this.input, this.startCaretPos, this.endCaretPos);
+    if (this.debug) {
+      console.warn("Input value has been updated:", this.input.value);
+    }
   }
 
   render() {

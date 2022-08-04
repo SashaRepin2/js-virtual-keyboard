@@ -1,6 +1,9 @@
+/**
+ * The keyboard panel
+ */
 class Panel {
   parentDOM;
-  rootDOM;
+  panelDOM;
   closeBtnEl;
   hideBtnEl;
 
@@ -18,7 +21,7 @@ class Panel {
     deleteCallBack
   ) {
     this.parentDOM = parentDOM;
-    this.rootDOM = null;
+    this.panelDOM = null;
     this.closeBtnEl = null;
     this.hideBtnEl = null;
 
@@ -27,8 +30,8 @@ class Panel {
     this.isCanHide = isCanHide;
 
     // binds
-    this.hideKeyboard = this.hideKeyboard.bind(this);
-    this.closeKeyboard = this.closeKeyboard.bind(this);
+    this.hideWindow = this.hideWindow.bind(this);
+    this.closeWindow = this.closeWindow.bind(this);
 
     this.deleteCallBack = deleteCallBack;
 
@@ -39,15 +42,13 @@ class Panel {
     }
   }
 
-  closeKeyboard() {
-    // how to delete all keyboard? callback???
-    // this.destroy();
+  closeWindow() {
     if (typeof this.deleteCallBack === "function") {
       this.deleteCallBack();
     }
   }
 
-  hideKeyboard() {
+  hideWindow() {
     this.parentDOM.classList.toggle("hidden");
 
     if (this.debug) {
@@ -67,7 +68,7 @@ class Panel {
       const hidePanelBtnEl = document.createElement("button");
       hidePanelBtnEl.textContent = "Hide";
       hidePanelBtnEl.classList.add("keyboard__hide");
-      hidePanelBtnEl.onclick = this.hideKeyboard;
+      hidePanelBtnEl.onclick = this.hideWindow;
 
       this.hideBtnEl = hidePanelBtnEl;
       keyboardPanelEl.appendChild(hidePanelBtnEl);
@@ -78,13 +79,13 @@ class Panel {
       const closePanelBtnEl = document.createElement("button");
       closePanelBtnEl.textContent = "Close";
       closePanelBtnEl.classList.add("keyboard__close");
-      closePanelBtnEl.onclick = this.closeKeyboard;
+      closePanelBtnEl.onclick = this.closeWindow;
 
       this.closeBtnEl = closePanelBtnEl;
       keyboardPanelEl.appendChild(closePanelBtnEl);
     }
 
-    this.rootDOM = keyboardPanelEl;
+    this.panelDOM = keyboardPanelEl;
     this.parentDOM.appendChild(keyboardPanelEl);
   }
 
@@ -100,7 +101,7 @@ class Panel {
     this.hideBtnEl = null;
 
     this.panelButtons = null;
-    this.rootDOM.remove();
+    this.panelDOM.remove();
 
     if (this.debug) {
       console.warn("Keyboard panel was destroyed!");
