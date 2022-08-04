@@ -1,5 +1,5 @@
 import BUTTON_TYPES from "../utils/buttonTypes";
-import KeyboardButton from "./Button/KeyboardButton";
+import Button from "./Button/Button";
 import { Input } from "./Input/Input";
 import "./Keyboard.scss";
 import Panel from "./Panel/Panel";
@@ -13,23 +13,41 @@ const defaultOptions = {
 };
 
 // TODO: Keyboard: caps and shift keyboard state X
-// TODO: Input: when 2 or more keyboards - the event is called several times // Neend fix
+// TODO: Input: when 2 or more keyboards - event is called several times // Neend fix X/V
+// TODO: need fix when typing and input get focus in start position X
+// TODO: hold key
 
+/**
+ * The keybaord class (root class)
+ * Contains info about:
+ *  - current buttons, panel, current input
+ *  - keyboard node, parent node
+ *  -
+ */
 export class Keyboard {
-  keyboardParentDOM;
-  keyboardRootDOM;
+  keyboardParentNode;
+  keyboardRootNode;
   keyboardConfig;
+
+  // Keyobard states
   isShifted;
   isCapsed;
 
+  // Сhecks for changes to the input field
   inputObserver;
+
+  // Manages
   keyboardPanel;
   options;
 
   // Current buttons of keyboard layout
   buttons;
 
-  constructor(keyboardParentDOM, keyboardKeysConfig, options = defaultOptions) {
+  constructor(
+    keyboardParentNode,
+    keyboardKeysConfig,
+    options = defaultOptions
+  ) {
     if (typeof window === "undefined") return;
 
     // additional options
@@ -42,14 +60,14 @@ export class Keyboard {
     // current buttons of keyboard
     this.buttons = [];
 
-    this.keyboardParentDOM = keyboardParentDOM;
+    this.keyboardParentNode = keyboardParentNode;
     this.keyboardConfig = keyboardKeysConfig;
 
     // binds
     this.onKeyDownHanlder = this.onKeyDownHanlder.bind(this);
     this.render = this.render.bind(this);
 
-    if (this.keyboardParentDOM) {
+    if (this.keyboardParentNode) {
       this.render();
     } else {
       throw new Error("Keyboard: the parent DOM element not found");
@@ -74,6 +92,10 @@ export class Keyboard {
         break;
       case BUTTON_TYPES.TAB:
         this.inputObserver.updateValue("\t");
+        break;
+      case BUTTON_TYPES.ESC:
+        // reset focused input
+        this.inputObserver.input = null;
         break;
       default:
         if (this.options.debug) {
@@ -140,8 +162,8 @@ export class Keyboard {
 
     keyboardRootEl.appendChild(keyboardLayoutEl);
 
-    this.keyboardRootDOM = keyboardRootEl;
-    this.keyboardParentDOM.appendChild(this.keyboardRootDOM);
+    this.keyboardRootNode = keyboardRootEl;
+    this.keyboardParentNode.appendChild(this.keyboardRootNode);
 
     if (this.options.debug) {
       console.log("Keyborad has been render");
@@ -180,16 +202,21 @@ export class Keyboard {
     }
   }
 
-  //
-  createButtons(buttons, parentDOM) {
+  /**
+   * Render buttons
+   * @param {Array} buttons
+   * @param {Node} parentDOM
+   */
+  createButtons(buttons, parentNode) {
     for (const button of buttons) {
-      const btn = new KeyboardButton(
-        parentDOM,
+      const btn = new Button(
+        parentNode,
         button.value,
         button.shift,
         button.type,
         this.onKeyDownHanlder
       );
+
       this.buttons.push(btn);
     }
   }
@@ -206,6 +233,6 @@ export class Keyboard {
     this.inputObserver.destroy();
     this.inputObserver = null;
 
-    this.keyboardRootDOM.remove();
+    this.keyboardRootNode.remove();
   }
 }

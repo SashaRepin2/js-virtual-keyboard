@@ -9,7 +9,7 @@ const inputEl = document.createElement("input");
 inputEl.id = "testInput";
 root.appendChild(inputEl);
 
-const inputEl1 = document.createElement("input");
+const inputEl1 = document.createElement("textarea");
 inputEl1.id = "testInput1";
 root.appendChild(inputEl1);
 

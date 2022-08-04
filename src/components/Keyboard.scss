@@ -58,7 +58,7 @@
       margin: 0 15px;
     }
 
-    button {
+    .btn {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -76,6 +76,10 @@
       border-radius: 10px;
 
       cursor: pointer;
+
+      &.pressed {
+        background-color: rgb(43, 42, 42) !important;
+      }
 
       &__active {
         color: rgb(179, 179, 179);
