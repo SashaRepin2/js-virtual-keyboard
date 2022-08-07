@@ -79,9 +79,11 @@ export class Keyboard {
 
     switch (button.type) {
       case BUTTON_TYPES.SHIFT:
+        this.isCapsed = false;
         this.isShifted = !this.isShifted;
         break;
       case BUTTON_TYPES.CAPSLOCK:
+        this.isShifted = false;
         this.isCapsed = !this.isCapsed;
         break;
       case BUTTON_TYPES.DEFAULT:
@@ -105,6 +107,18 @@ export class Keyboard {
         break;
       case BUTTON_TYPES.SPACE:
         this.inputObserver.addValue(" ");
+        break;
+      case BUTTON_TYPES.INSERT:
+        this.inputObserver.insertSelected();
+        break;
+      case BUTTON_TYPES.COPY:
+        this.inputObserver.copySelected();
+        break;
+      case BUTTON_TYPES.PAGEUP:
+        this.onPageKeyPress(true);
+        break;
+      case BUTTON_TYPES.PAGEDOWN:
+        this.onPageKeyPress();
         break;
       default:
         if (this.options.debug) {
@@ -130,9 +144,12 @@ export class Keyboard {
   }
 
   onPageKeyPress(isUp = false) {
-    const scrollValue = document.body.hei;
+    const scrollValue = isUp ? -100 : 100;
 
-    document.body.animate({ scrollTop: 0 }, 600);
+    window.scrollBy({
+      top: scrollValue,
+      behavior: "smooth",
+    });
   }
 
   rerender() {
@@ -163,7 +180,7 @@ export class Keyboard {
 
     // Create board layout
     const keyboardLayoutEl = document.createElement("div");
-    keyboardLayoutEl.classList.add("keyboard__layout");
+    keyboardLayoutEl.classList.add("keyboard-layout");
 
     // Create lines & columns
     if (this.keyboardConfig.hasOwnProperty("lines")) {

@@ -85,7 +85,7 @@ export class Input {
   removeValue(isBackspaceDelete = true) {
     if (!this.input || !this.input.value) return;
 
-    // Get caret position and selection lenght
+    // Get caret position and selected value lenght
     let { start, end } = this.getCaretPosition();
 
     const oldInputValue = this.input.value;
@@ -130,6 +130,51 @@ export class Input {
 
     if (this.debug) {
       console.warn("Input value has been updated:", this.input.value);
+    }
+  }
+
+  copySelected() {
+    if (!this.input || !this.input.value) return;
+
+    const { start, end } = this.getCaretPosition();
+
+    if (end - start > 0) {
+      const copyValue = this.input.value.substr(start, end);
+
+      if (navigator.clipboard) {
+        navigator.clipboard
+          .writeText(copyValue)
+          .then(() => {
+            if (this.debug)
+              console.warn("Input: value was successfully copied:", copyValue);
+          })
+          .catch((err) => {
+            if (this.debug) console.warn("Input: write copy text error", err);
+          });
+      } else {
+        if (this.debug)
+          console.warn("Input: this browser dont supported clipboard");
+      }
+    }
+  }
+
+  insertSelected() {
+    if (!this.input || !this.input.value) return;
+
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .readText()
+        .then((value) => {
+          this.addValue(value);
+          if (this.debug)
+            console.warn("Input: value was successfully inserted");
+        })
+        .catch((err) => {
+          if (this.debug) console.warn("Input: read copy text error", err);
+        });
+    } else {
+      if (this.debug)
+        console.warn("Input: this browser dont supported clipboard");
     }
   }
 

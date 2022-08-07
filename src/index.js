@@ -1,5 +1,5 @@
 import { Keyboard } from "./components/Keyboard";
-import keyboardConfig from "./components/keyboardConfig";
+import keyboardConfig from "./utils/keyboardConfig";
 import "./styles/index.scss";
 
 const root = document.getElementById("root");

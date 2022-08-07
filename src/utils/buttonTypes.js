@@ -11,6 +11,8 @@ const BUTTON_TYPES = {
   PAGEDOWN: "PAGEDOWN",
   SPACE: "SPACE",
   ALT: "ALT",
+  COPY: "COPY",
+  INSERT: "INSERT",
 };
 
 export default BUTTON_TYPES;

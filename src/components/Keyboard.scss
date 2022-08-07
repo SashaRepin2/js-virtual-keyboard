@@ -1,10 +1,16 @@
 .keyboard {
+  position: fixed;
+  margin: 0 auto;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+
   height: fit-content;
   width: fit-content;
   overflow: hidden;
 
   color: #fff;
-  background-color: #1a1a1a;
+  background-color: #292929;
   border-radius: 5px;
 
   &-panel {
@@ -47,8 +53,8 @@
     margin: 10px;
     padding: 3px;
 
-    color: white;
-    background-color: black;
+    color: #ffffff;
+    background-color: #1a1a1a;
     border-radius: 5px;
 
     &--line {
@@ -92,7 +98,7 @@
     }
 
     &:active {
-      background-color: red !important;
+      background-color: #ff0000;
     }
   }
 
@@ -101,15 +107,12 @@
   }
 
   &.hidden {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     left: 20px;
-    width: 100%;
 
-    .keyboard__layout {
-      height: 0;
-      padding: 0;
-      margin: 0;
+    .keyboard-layout {
+      display: none;
     }
   }
 
