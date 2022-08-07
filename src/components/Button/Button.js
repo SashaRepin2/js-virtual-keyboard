@@ -1,3 +1,5 @@
+import BUTTON_TYPES from "../../utils/buttonTypes";
+
 /**
  * The keyboard button class.
  * Contain info about:
@@ -26,16 +28,14 @@ class Button {
     parentNode,
     defaultValue,
     shiftValue,
-    type,
+    type = BUTTON_TYPES.DEFAULT,
     callback,
-    className = "",
     isShiftOrCaps = false
   ) {
     this.parentNode = parentNode;
     this.defaultValue = defaultValue;
     this.shiftValue = shiftValue;
     this.type = type;
-    this.buttonClassName = className;
 
     this.onKeyClickCallback = callback;
     this.onKeyClick = this.onKeyClick.bind(this);
@@ -60,65 +60,42 @@ class Button {
       state: this.isShiftOrCaps,
     };
 
-    this.buttonNode.classList.add("pressed");
-
     this.onKeyClickCallback(btnValues);
 
-    setTimeout(() => {
-      this.buttonNode.classList.remove("pressed");
-    }, 200);
+    // this.buttonNode.classList.add("pressed");
+
+    // setTimeout(() => {
+    //   this.buttonNode.classList.remove("pressed");
+    // }, 200);
   }
 
   getCurrentButtonValue(isShiftOrCaps) {
     return isShiftOrCaps ? this.shiftValue : this.defaultValue;
   }
 
-  rerender(isShiftOrCaps = false) {
-    // how to understand what state keyboard is now?
-    // change buttonNode. Can dont delete DOM EL, just change textContent
-    //
+  getCategoriaButton(type) {
+    return BUTTON_TYPES.DEFAULT === type ? "func" : "standart";
+  }
 
+  rerender(isShiftOrCaps = false) {
     if (this.buttonNode && this.shiftValue) {
       this.buttonNode.textContent = this.getCurrentButtonValue(isShiftOrCaps);
     }
-
-    // const inactiveValueEl =
-    //   this.buttonNode.getElementsByClassName("button__inactive")[0];
-    // if (inactiveValueEl) {
-    //   inactiveValueEl.textContent = isShifted
-    //     ? this.defaultValue
-    //     : this.shiftValue;
-    // }
   }
 
   render() {
     // Create button
     const buttonEl = document.createElement("button");
-    buttonEl.classList.add("btn");
+    buttonEl.classList.add("keyboard-btn");
+    buttonEl.classList.add(`keyboard-${this.type.toLowerCase()}`);
 
-    // For custom styles
-    // if (this.buttonClassName) {
-    //   buttonEl.classList.add(this.buttonClassName);
-    // }
+    const spanEl = document.createElement("span");
 
     // Аctive value is a value that depends on the current state of the keyboard
     const activeValue = this.getCurrentButtonValue(this.isShiftOrCaps);
 
-    // if (this.shiftValue) {
-    // Create inactive button value (shift value, when state is none shifted, default value when state is shifted)
-    // const buttonInactiveValue = document.createElement("div");
-    // buttonInactiveValue.classList.add("button__inactive");
-    // buttonInactiveValue.textContent = this.shiftValue;
-    // buttonEl.appendChild(buttonInactiveValue);
-    // // }
-
-    // Create active button value
-    // const buttonActiveValue = document.createElement("div");
-    // buttonActiveValue.classList.add("button__active");
-    // buttonActiveValue.textContent = this.defaultValue;
-    // buttonEl.appendChild(buttonActiveValue);
-
-    buttonEl.textContent = activeValue;
+    spanEl.textContent = activeValue;
+    buttonEl.appendChild(spanEl);
     buttonEl.addEventListener("click", this.onKeyClick);
 
     this.buttonNode = buttonEl;

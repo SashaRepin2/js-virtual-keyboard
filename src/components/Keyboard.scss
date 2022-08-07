@@ -7,7 +7,7 @@
   background-color: #1a1a1a;
   border-radius: 5px;
 
-  &__panel {
+  &-panel {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -17,19 +17,28 @@
     padding: 5px 15px;
     min-height: 15px;
 
-    button {
-      margin: 0 5px;
+    &--btn {
+      margin: 2px 5px;
       padding: 5px;
 
-      cursor: pointer;
       border: none;
       border-radius: 5px;
+
+      background-color: #424242;
+
+      color: #fff;
       font-size: 14px;
       font-weight: bold;
+
+      cursor: pointer;
+
+      &:hover {
+        background-color: #313131;
+      }
     }
   }
 
-  &__layout {
+  &-layout {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -42,7 +51,7 @@
     background-color: black;
     border-radius: 5px;
 
-    .line {
+    &--line {
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
@@ -50,57 +59,61 @@
       padding: 5px 0px;
     }
 
-    .column {
+    &--column {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
       margin: 0 15px;
     }
+  }
 
-    .btn {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+  &-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
-      min-width: 48px;
-      min-height: 48px;
+    min-width: 48px;
+    min-height: 48px;
 
-      margin: 0 3px;
-      padding: 5px;
+    margin: 0 3px;
+    padding: 5px;
 
-      color: #fff;
-      font-weight: bold;
-      background-color: #303030;
-      border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    background-color: #303030;
+    border-radius: 10px;
 
-      cursor: pointer;
+    cursor: pointer;
 
-      &.pressed {
-        background-color: rgb(43, 42, 42) !important;
-      }
-
-      &__active {
-        color: rgb(179, 179, 179);
-        font-weight: normal;
-      }
-
-      &:hover {
-        background-color: #3f3f3f;
-      }
+    &:hover {
+      background-color: #3f3f3f;
     }
+
+    &:active {
+      background-color: red !important;
+    }
+  }
+
+  &-space {
+    width: 250px;
   }
 
   &.hidden {
     position: absolute;
     bottom: 20px;
     left: 20px;
+    width: 100%;
 
     .keyboard__layout {
       height: 0;
       padding: 0;
       margin: 0;
     }
+  }
+
+  span {
+    pointer-events: none;
   }
 }

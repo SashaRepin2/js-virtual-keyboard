@@ -7,6 +7,10 @@ const BUTTON_TYPES = {
   CAPSLOCK: "CAPSLOCK",
   ESC: "ESC",
   DELETE: "DELETE",
+  PAGEUP: "PAGEUP",
+  PAGEDOWN: "PAGEDOWN",
+  SPACE: "SPACE",
+  ALT: "ALT",
 };
 
 export default BUTTON_TYPES;

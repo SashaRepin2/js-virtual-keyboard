@@ -20,8 +20,6 @@ module.exports = {
     client: { logging: "error" },
   },
 
-  stats: "errors-only",
-
   resolve: {
     extensions: [".js", ".ts", ".tsx"],
   },

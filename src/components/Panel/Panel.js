@@ -1,9 +1,9 @@
 /**
- * The keyboard panel
+ * The keyboard panel class
  */
 class Panel {
-  parentDOM;
-  panelDOM;
+  parentNode;
+  panelNode;
   closeBtnEl;
   hideBtnEl;
 
@@ -14,14 +14,14 @@ class Panel {
   deleteCallBack;
 
   constructor(
-    parentDOM,
+    parentNode,
     isCanClose = true,
     isCanHide = true,
-    debug = true,
-    deleteCallBack
+    deleteCallBack,
+    debug = true
   ) {
-    this.parentDOM = parentDOM;
-    this.panelDOM = null;
+    this.parentNode = parentNode;
+    this.panelNode = null;
     this.closeBtnEl = null;
     this.hideBtnEl = null;
 
@@ -35,7 +35,7 @@ class Panel {
 
     this.deleteCallBack = deleteCallBack;
 
-    if (this.parentDOM) {
+    if (this.parentNode) {
       this.render();
     } else {
       throw new Error("KeyboardPanel: the parent DOM element not found");
@@ -49,7 +49,7 @@ class Panel {
   }
 
   hideWindow() {
-    this.parentDOM.classList.toggle("hidden");
+    this.parentNode.classList.toggle("hidden");
 
     if (this.debug) {
       console.warn("KeyboardPanel: hidden state of keyboard has been change");
@@ -61,13 +61,16 @@ class Panel {
   render() {
     // Create keyboard panel
     const keyboardPanelEl = document.createElement("div");
-    keyboardPanelEl.classList.add("keyboard__panel");
+    keyboardPanelEl.classList.add("keyboard-panel");
 
     if (this.isCanHide) {
       // Create hide button
       const hidePanelBtnEl = document.createElement("button");
       hidePanelBtnEl.textContent = "Hide";
-      hidePanelBtnEl.classList.add("keyboard__hide");
+      hidePanelBtnEl.classList.add(
+        "keyboard-panel--hide",
+        "keyboard-panel--btn"
+      );
       hidePanelBtnEl.onclick = this.hideWindow;
 
       this.hideBtnEl = hidePanelBtnEl;
@@ -78,19 +81,22 @@ class Panel {
       // Create close button
       const closePanelBtnEl = document.createElement("button");
       closePanelBtnEl.textContent = "Close";
-      closePanelBtnEl.classList.add("keyboard__close");
+      closePanelBtnEl.classList.add(
+        "keyboard-panel--close",
+        "keyboard-panel--btn"
+      );
       closePanelBtnEl.onclick = this.closeWindow;
 
       this.closeBtnEl = closePanelBtnEl;
       keyboardPanelEl.appendChild(closePanelBtnEl);
     }
 
-    this.panelDOM = keyboardPanelEl;
-    this.parentDOM.appendChild(keyboardPanelEl);
+    this.panelNode = keyboardPanelEl;
+    this.parentNode.appendChild(keyboardPanelEl);
   }
 
   destroy() {
-    this.parentDOM = null;
+    this.parentNode = null;
     this.isCanClose = null;
     this.isCanHide = null;
 
@@ -101,7 +107,7 @@ class Panel {
     this.hideBtnEl = null;
 
     this.panelButtons = null;
-    this.panelDOM.remove();
+    this.panelNode.remove();
 
     if (this.debug) {
       console.warn("Keyboard panel was destroyed!");

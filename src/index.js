@@ -13,8 +13,15 @@ const inputEl1 = document.createElement("textarea");
 inputEl1.id = "testInput1";
 root.appendChild(inputEl1);
 
+const defaultOptions = {
+  panel: { isCanHide: true, isCanClose: true },
+  keyboard: { isShifted: false, isCapsed: false },
+  input: { initInput: inputEl, isFixedInput: false },
+  debug: true,
+};
+
 // Create keyboard
 let start = performance.now();
-const keyboard = new Keyboard(root, keyboardConfig);
+const keyboard = new Keyboard(root, keyboardConfig, defaultOptions);
 let end = performance.now();
 console.log("Time (milliseconds:microseconds):", end - start);

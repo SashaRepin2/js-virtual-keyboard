@@ -157,10 +157,6 @@ const keyboardConfig = {
                   shift: "/",
                   type: BUTTON_TYPES.DEFAULT,
                 },
-                {
-                  value: "Del",
-                  type: BUTTON_TYPES.DELETE,
-                },
               ],
             },
             {
@@ -300,6 +296,26 @@ const keyboardConfig = {
                   value: ".com",
                   type: BUTTON_TYPES.DEFAULT,
                 },
+                {
+                  value: "😀",
+                  type: BUTTON_TYPES.DEFAULT,
+                },
+              ],
+            },
+            {
+              buttons: [
+                {
+                  value: "FN",
+                  type: BUTTON_TYPES.DEFAULT,
+                },
+                {
+                  value: "CTRL",
+                  type: BUTTON_TYPES.DEFAULT,
+                },
+                {
+                  value: "Space",
+                  type: BUTTON_TYPES.SPACE,
+                },
               ],
             },
           ],
@@ -310,9 +326,11 @@ const keyboardConfig = {
               buttons: [
                 {
                   value: "Home",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
                 {
                   value: "PgUp",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
               ],
             },
@@ -320,9 +338,11 @@ const keyboardConfig = {
               buttons: [
                 {
                   value: "End",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
                 {
                   value: "PgDn",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
               ],
             },
@@ -330,9 +350,11 @@ const keyboardConfig = {
               buttons: [
                 {
                   value: "End",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
                 {
                   value: "PgDn",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
               ],
             },
@@ -340,9 +362,11 @@ const keyboardConfig = {
               buttons: [
                 {
                   value: "Insert",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
                 {
                   value: "Pause",
+                  type: BUTTON_TYPES.DEFAULT,
                 },
               ],
             },

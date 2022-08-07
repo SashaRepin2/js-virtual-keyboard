@@ -5,17 +5,19 @@ import "./Keyboard.scss";
 import Panel from "./Panel/Panel";
 
 const defaultOptions = {
-  isCanHide: true,
-  isCanClose: true,
-  isShifted: false,
-  isCapsed: false,
+  panel: { isCanHide: true, isCanClose: true },
+  keyboard: { isShifted: false, isCapsed: false },
+  input: { initInput: null, isFixedInput: false },
   debug: true,
 };
 
 // TODO: Keyboard: caps and shift keyboard state // X/V
 // TODO: Input: when 2 or more keyboards - event is called several times // X/V
-// TODO: need fix when typing and input get focus in start position // X
-// TODO: hold key // X
+// TODO: Input: need fix when typing and input get focus in start position // X
+// TODO: Keyboard: hold key // X
+// TODO add type btn class in styles // V
+// TODO: Keyboard: add support copy selection text in buffer
+// TODO: Keyboard: add support page up/down btn
 
 /**
  * The keybaord class (root class)
@@ -28,6 +30,8 @@ export class Keyboard {
   keyboardParentNode;
   keyboardRootNode;
   keyboardConfig;
+  keyboardPanel;
+  options;
 
   // Keyobard states
   isShifted;
@@ -35,10 +39,6 @@ export class Keyboard {
 
   // Сhecks for changes to the input field
   inputObserver;
-
-  // Manages
-  keyboardPanel;
-  options;
 
   // Current buttons of keyboard layout
   buttons;
@@ -50,20 +50,20 @@ export class Keyboard {
   ) {
     if (typeof window === "undefined") return;
 
-    // additional options
+    // Additional options
     this.options = options;
 
-    // keyboard states
-    this.isShifted = this.options.isShifted;
-    this.isCapsed = this.options.isCapsed;
+    // Keyboard states
+    this.isShifted = false;
+    this.isCapsed = false;
 
-    // current buttons of keyboard
+    // Current buttons of keyboard
     this.buttons = [];
 
     this.keyboardParentNode = keyboardParentNode;
     this.keyboardConfig = keyboardKeysConfig;
 
-    // binds
+    // Binds func
     this.onKeyDownHanlder = this.onKeyDownHanlder.bind(this);
     this.render = this.render.bind(this);
 
@@ -88,20 +88,23 @@ export class Keyboard {
         this.onDefaultKeyPress(button);
         break;
       case BUTTON_TYPES.ENTER:
-        this.inputObserver.updateValue("\n");
+        this.inputObserver.addValue("\n");
         break;
       case BUTTON_TYPES.TAB:
-        this.inputObserver.updateValue("\t");
+        this.inputObserver.addValue("\t");
         break;
       case BUTTON_TYPES.BACKSPACE:
-        this.inputObserver.deleteValue();
+        this.inputObserver.removeValue();
         break;
       case BUTTON_TYPES.DELETE:
-        this.inputObserver.deleteValue(false);
+        this.inputObserver.removeValue(false);
         break;
       case BUTTON_TYPES.ESC:
-        // reset focused input
+        // reset input
         this.inputObserver.input = null;
+        break;
+      case BUTTON_TYPES.SPACE:
+        this.inputObserver.addValue(" ");
         break;
       default:
         if (this.options.debug) {
@@ -114,19 +117,22 @@ export class Keyboard {
   }
 
   onDefaultKeyPress(button) {
-    // Btn states: btn has shift (shift=caps) value (btn has two value), btn has not shift value (btn has one value)
-    // Get button value
+    // Get button value, if keyboard has shift or caps state, then shift value, else default
     const value =
       (this.isShifted || this.isCapsed) && button.shift
         ? button.shift
         : button.value;
 
-    // Update input value
-    this.inputObserver.updateValue(value);
+    this.inputObserver.addValue(value);
 
-    // Change keyboard state
     this.isShifted = false;
     this.rerender();
+  }
+
+  onPageKeyPress(isUp = false) {
+    const scrollValue = document.body.hei;
+
+    document.body.animate({ scrollTop: 0 }, 600);
   }
 
   rerender() {
@@ -142,14 +148,16 @@ export class Keyboard {
     keyboardRootEl.classList.add("keyboard");
 
     // Create input observer
-    this.inputObserver = new Input();
+    this.inputObserver = new Input(
+      this.options.input.initInput,
+      this.options.input.isFixedInput
+    );
 
     // Create keyboard panel
     this.keyboardPanel = new Panel(
       keyboardRootEl,
-      this.options.isCanClose,
-      this.options.isCanHide,
-      null,
+      this.options.panel.isCanClose,
+      this.options.panel.isCanHide,
       this.destroy.bind(this)
     );
 
@@ -174,11 +182,11 @@ export class Keyboard {
     }
   }
 
-  // ?? optimization - code renderColumn = renderLine
+  // ?? optimization - code func renderColumn = renderLine
   renderLine(lines, parentEl) {
     for (const line of lines) {
       const lineEl = document.createElement("div");
-      lineEl.classList.add("line");
+      lineEl.classList.add("keyboard-layout--line");
 
       if (line.hasOwnProperty("buttons")) {
         this.createButtons(line.buttons, lineEl);
@@ -194,7 +202,7 @@ export class Keyboard {
   renderColumn(columns, parentEl) {
     for (const column of columns) {
       const columnEl = document.createElement("div");
-      columnEl.classList.add("column");
+      columnEl.classList.add("keyboard-layout--column");
 
       if (column.hasOwnProperty("buttons")) {
         this.createButtons(column.buttons, columnEl);
@@ -224,8 +232,6 @@ export class Keyboard {
       this.buttons.push(btn);
     }
   }
-
-  parseOptions() {}
 
   destroy() {
     this.isShifted = null;
