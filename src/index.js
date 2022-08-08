@@ -17,7 +17,7 @@ inputContainer.appendChild(inputEl1);
 
 const keyboardOptions = {
   panel: { isCanHide: true, isCanClose: true },
-  input: { initInput: inputEl, isFixedInput: true },
+  input: { initInput: inputEl, isFixedInput: false },
 };
 
 // Create keyboard

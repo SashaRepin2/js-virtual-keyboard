@@ -11,16 +11,6 @@ const defaultOptions = {
   debug: true,
 };
 
-// TODO: Keyboard: caps and shift keyboard state // X/V
-// TODO: Input: when 2 or more keyboards - event is called several times // X/V
-// TODO: Input: need fix when typing and input get focus in start position // X
-// TODO: Keyboard: hold key // X
-// TODO: Add type btn classes in styles // V
-// TODO: Keyboard: add support copy selection text in buffer // V
-// TODO: Keyboard: add support page up/down btn // V
-
-// TODO: Change constructor arguments // x
-
 /**
  * The keybaord class (root class)
  * Contains info about:
