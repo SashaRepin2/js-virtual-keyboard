@@ -13,6 +13,8 @@ const BUTTON_TYPES = {
   ALT: "ALT",
   COPY: "COPY",
   INSERT: "INSERT",
+  END: "END",
+  START: "START",
 };
 
 export default BUTTON_TYPES;

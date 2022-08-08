@@ -1,13 +1,13 @@
-import BUTTON_TYPES from "../utils/buttonTypes";
+import BUTTON_TYPES from "../../utils/buttonTypes";
 import Button from "./Button/Button";
-import { Input } from "./Input/Input";
-import "./Keyboard.scss";
+import Input from "./Input/Input";
 import Panel from "./Panel/Panel";
 
+import "./Keyboard.scss";
+
 const defaultOptions = {
-  panel: { isCanHide: true, isCanClose: true },
-  keyboard: { isShifted: false, isCapsed: false },
-  input: { initInput: null, isFixedInput: false },
+  panelOptions: { isCanHide: true, isCanClose: true },
+  inputOptions: { initInput: null, isFixedInput: false },
   debug: true,
 };
 
@@ -15,9 +15,11 @@ const defaultOptions = {
 // TODO: Input: when 2 or more keyboards - event is called several times // X/V
 // TODO: Input: need fix when typing and input get focus in start position // X
 // TODO: Keyboard: hold key // X
-// TODO add type btn class in styles // V
-// TODO: Keyboard: add support copy selection text in buffer
-// TODO: Keyboard: add support page up/down btn
+// TODO: Add type btn classes in styles // V
+// TODO: Keyboard: add support copy selection text in buffer // V
+// TODO: Keyboard: add support page up/down btn // V
+
+// TODO: Change constructor arguments // x
 
 /**
  * The keybaord class (root class)
@@ -26,12 +28,13 @@ const defaultOptions = {
  *  - keyboard node, parent node
  *  -
  */
-export class Keyboard {
-  keyboardParentNode;
-  keyboardRootNode;
-  keyboardConfig;
+class Keyboard {
+  keyboardParentDOM;
+  keyboardRootDOM;
+  keyboardKeysConfig;
   keyboardPanel;
-  options;
+  panelOptions;
+  inputOptions;
 
   // Keyobard states
   isShifted;
@@ -43,15 +46,16 @@ export class Keyboard {
   // Current buttons of keyboard layout
   buttons;
 
+  debug;
+
   constructor(
-    keyboardParentNode,
+    keyboardParentDOM,
     keyboardKeysConfig,
-    options = defaultOptions
+    panelOptions = defaultOptions.panelOptions,
+    inputOptions = defaultOptions.inputOptions,
+    debug = defaultOptions.debug
   ) {
     if (typeof window === "undefined") return;
-
-    // Additional options
-    this.options = options;
 
     // Keyboard states
     this.isShifted = false;
@@ -60,14 +64,19 @@ export class Keyboard {
     // Current buttons of keyboard
     this.buttons = [];
 
-    this.keyboardParentNode = keyboardParentNode;
-    this.keyboardConfig = keyboardKeysConfig;
+    this.keyboardParentDOM = keyboardParentDOM;
+    this.keyboardKeysConfig = keyboardKeysConfig;
+
+    this.panelOptions = panelOptions;
+    this.inputOptions = inputOptions;
+    this.debug = debug;
 
     // Binds func
     this.onKeyDownHanlder = this.onKeyDownHanlder.bind(this);
     this.render = this.render.bind(this);
+    this.destroy = this.destroy.bind(this);
 
-    if (this.keyboardParentNode) {
+    if (this.keyboardParentDOM) {
       this.render();
     } else {
       throw new Error("Keyboard: the parent DOM element not found");
@@ -98,9 +107,6 @@ export class Keyboard {
       case BUTTON_TYPES.BACKSPACE:
         this.inputObserver.removeValue();
         break;
-      case BUTTON_TYPES.DELETE:
-        this.inputObserver.removeValue(false);
-        break;
       case BUTTON_TYPES.ESC:
         // reset input
         this.inputObserver.input = null;
@@ -120,8 +126,17 @@ export class Keyboard {
       case BUTTON_TYPES.PAGEDOWN:
         this.onPageKeyPress();
         break;
+      case BUTTON_TYPES.START:
+        this.inputObserver.setCaretPosition();
+        break;
+      case BUTTON_TYPES.END:
+        if (this.inputObserver.input) {
+          const endPos = this.inputObserver.input.value.length;
+          this.inputObserver.setCaretPosition(endPos, endPos);
+        }
+        break;
       default:
-        if (this.options.debug) {
+        if (this.debug) {
           console.warn(`Unexpected button type ${button.type}`);
         }
         break;
@@ -143,11 +158,14 @@ export class Keyboard {
     this.rerender();
   }
 
-  onPageKeyPress(isUp = false) {
-    const scrollValue = isUp ? -100 : 100;
-
+  /**
+   * Page up/down logic
+   * @param {boolean} isUp - is page up btn
+   * @param {number} scrollValue - scroll page value
+   */
+  onPageKeyPress(isUp = false, scrollValue = 100) {
     window.scrollBy({
-      top: scrollValue,
+      top: isUp ? -scrollValue : scrollValue,
       behavior: "smooth",
     });
   }
@@ -165,17 +183,16 @@ export class Keyboard {
     keyboardRootEl.classList.add("keyboard");
 
     // Create input observer
-    this.inputObserver = new Input(
-      this.options.input.initInput,
-      this.options.input.isFixedInput
-    );
+    const { initInput, isFixedInput } = this.inputOptions;
+    this.inputObserver = new Input(initInput, isFixedInput);
 
     // Create keyboard panel
+    const { isCanClose, isCanHide } = this.panelOptions;
     this.keyboardPanel = new Panel(
       keyboardRootEl,
-      this.options.panel.isCanClose,
-      this.options.panel.isCanHide,
-      this.destroy.bind(this)
+      isCanClose,
+      isCanHide,
+      this.destroy
     );
 
     // Create board layout
@@ -183,18 +200,18 @@ export class Keyboard {
     keyboardLayoutEl.classList.add("keyboard-layout");
 
     // Create lines & columns
-    if (this.keyboardConfig.hasOwnProperty("lines")) {
-      this.renderLine(this.keyboardConfig["lines"], keyboardLayoutEl);
+    if (this.keyboardKeysConfig.hasOwnProperty("lines")) {
+      this.renderLine(this.keyboardKeysConfig["lines"], keyboardLayoutEl);
     } else {
-      this.renderColumn(this.keyboardConfig["columns"], keyboardLayoutEl);
+      this.renderColumn(this.keyboardKeysConfig["columns"], keyboardLayoutEl);
     }
 
     keyboardRootEl.appendChild(keyboardLayoutEl);
 
-    this.keyboardRootNode = keyboardRootEl;
-    this.keyboardParentNode.appendChild(this.keyboardRootNode);
+    this.keyboardRootDOM = keyboardRootEl;
+    this.keyboardParentDOM.appendChild(this.keyboardRootDOM);
 
-    if (this.options.debug) {
+    if (this.debug) {
       console.log("Keyborad has been render");
     }
   }
@@ -260,6 +277,8 @@ export class Keyboard {
     this.inputObserver.destroy();
     this.inputObserver = null;
 
-    this.keyboardRootNode.remove();
+    this.keyboardRootDOM.remove();
   }
 }
+
+export default Keyboard;

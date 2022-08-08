@@ -97,6 +97,10 @@
       background-color: #3f3f3f;
     }
 
+    &--active {
+      background-color: #ff0000 !important;
+    }
+
     &:active {
       background-color: #ff0000;
     }

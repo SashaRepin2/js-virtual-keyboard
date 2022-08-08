@@ -338,11 +338,11 @@ const keyboardConfig = {
               buttons: [
                 {
                   value: "Start",
-                  type: BUTTON_TYPES.DEFAULT,
+                  type: BUTTON_TYPES.START,
                 },
                 {
                   value: "End",
-                  type: BUTTON_TYPES.DEFAULT,
+                  type: BUTTON_TYPES.END,
                 },
               ],
             },

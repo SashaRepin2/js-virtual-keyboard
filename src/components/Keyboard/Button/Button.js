@@ -1,4 +1,4 @@
-import BUTTON_TYPES from "../../utils/buttonTypes";
+import BUTTON_TYPES from "../../../utils/buttonTypes";
 
 /**
  * The keyboard button class.
@@ -10,8 +10,8 @@ import BUTTON_TYPES from "../../utils/buttonTypes";
  * Also contain render, rerendred and destroy functions
  */
 class Button {
-  parentNode;
-  buttonNode;
+  parentDOM;
+  buttonDOM;
   defaultValue;
   shiftValue;
   type;
@@ -25,14 +25,14 @@ class Button {
   onKeyClickCallback;
 
   constructor(
-    parentNode,
+    parentDOM,
     defaultValue,
     shiftValue,
     type = BUTTON_TYPES.DEFAULT,
     callback,
     isShiftOrCaps = false
   ) {
-    this.parentNode = parentNode;
+    this.parentDOM = parentDOM;
     this.defaultValue = defaultValue;
     this.shiftValue = shiftValue;
     this.type = type;
@@ -42,7 +42,7 @@ class Button {
 
     this.isShiftOrCaps = isShiftOrCaps;
 
-    if (this.parentNode) {
+    if (this.parentDOM) {
       this.render();
     } else {
       throw new Error("The parent dom element not found");
@@ -53,20 +53,15 @@ class Button {
     if (typeof this.onKeyClickCallback !== "function")
       console.error("Button: The button onKeyDownCallback is not function");
 
-    const btnValues = {
+    const btn = {
+      buttonDOM: this.buttonDOM,
       value: this.defaultValue,
       shift: this.shiftValue,
       type: this.type,
       state: this.isShiftOrCaps,
     };
 
-    this.onKeyClickCallback(btnValues);
-
-    // this.buttonNode.classList.add("pressed");
-
-    // setTimeout(() => {
-    //   this.buttonNode.classList.remove("pressed");
-    // }, 200);
+    this.onKeyClickCallback(btn);
   }
 
   getCurrentButtonValue(isShiftOrCaps) {
@@ -78,9 +73,15 @@ class Button {
   }
 
   rerender(isShiftOrCaps = false) {
-    if (this.buttonNode && this.shiftValue) {
-      this.buttonNode.textContent = this.getCurrentButtonValue(isShiftOrCaps);
+    if (this.buttonDOM && this.shiftValue) {
+      this.buttonDOM.textContent = this.getCurrentButtonValue(isShiftOrCaps);
     }
+
+    // if (this.type === BUTTON_TYPES.SHIFT && isShiftOrCaps) {
+    //   this.buttonDOM.classList.add("keyboard-btn--active");
+    // } else {
+    //   this.buttonDOM.classList.remove("keyboard-btn--active");
+    // }
   }
 
   render() {
@@ -88,26 +89,26 @@ class Button {
     const buttonEl = document.createElement("button");
     buttonEl.classList.add("keyboard-btn");
     buttonEl.classList.add(`keyboard-${this.type.toLowerCase()}`);
-
-    const spanEl = document.createElement("span");
+    // buttonEl.setAttribute("id", this.id);
 
     // Аctive value is a value that depends on the current state of the keyboard
     const activeValue = this.getCurrentButtonValue(this.isShiftOrCaps);
+    // const spanEl = document.createElement("span");
+    buttonEl.textContent = activeValue;
 
-    spanEl.textContent = activeValue;
-    buttonEl.appendChild(spanEl);
+    // buttonEl.appendChild(spanEl);
     buttonEl.addEventListener("click", this.onKeyClick);
 
-    this.buttonNode = buttonEl;
-    this.parentNode.appendChild(this.buttonNode);
+    this.buttonDOM = buttonEl;
+    this.parentDOM.appendChild(this.buttonDOM);
   }
 
   destroy() {
-    this.buttonNode.removeEventListener("click", this.onKeyClick);
-    this.buttonNode.remove();
-    this.buttonNode = null;
+    this.buttonDOM.removeEventListener("click", this.onKeyClick);
+    this.buttonDOM.remove();
+    this.buttonDOM = null;
 
-    this.parentNode = null;
+    this.parentDOM = null;
 
     this.defaultValue = null;
     this.shiftValue = null;

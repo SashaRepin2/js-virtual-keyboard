@@ -11,13 +11,13 @@ class Panel {
   isCanClose;
   debug;
 
-  deleteCallBack;
+  closeCallback;
 
   constructor(
     parentNode,
     isCanClose = true,
     isCanHide = true,
-    deleteCallBack,
+    closeCallback,
     debug = true
   ) {
     this.parentNode = parentNode;
@@ -33,7 +33,7 @@ class Panel {
     this.hideWindow = this.hideWindow.bind(this);
     this.closeWindow = this.closeWindow.bind(this);
 
-    this.deleteCallBack = deleteCallBack;
+    this.closeCallback = closeCallback;
 
     if (this.parentNode) {
       this.render();
@@ -44,7 +44,7 @@ class Panel {
 
   closeWindow() {
     if (typeof this.deleteCallBack === "function") {
-      this.deleteCallBack();
+      this.closeCallback();
     }
   }
 

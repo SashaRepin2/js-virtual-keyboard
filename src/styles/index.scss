@@ -18,6 +18,12 @@ body {
   background-color: rgb(75, 75, 75);
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 input,
 textarea {
   border-radius: 5px;
@@ -28,4 +34,10 @@ textarea {
   &:focus {
     outline: none;
   }
+}
+
+textarea {
+  min-height: 50px;
+  min-width: 100px;
+  max-width: 400px;
 }

@@ -1,4 +1,4 @@
-export class Input {
+class Input {
   input;
   isFixedInput;
   startCaretPos;
@@ -125,7 +125,7 @@ export class Input {
     this.input.value =
       this.input.value.substr(0, start) + value + this.input.value.substr(end);
 
-    // Update curr caret position
+    // Update current caret position
     this.setCaretPosition(start + value.length, end + value.length);
 
     if (this.debug) {
@@ -149,11 +149,13 @@ export class Input {
               console.warn("Input: value was successfully copied:", copyValue);
           })
           .catch((err) => {
-            if (this.debug) console.warn("Input: write copy text error", err);
+            if (this.debug) console.error("Input: copy error", err);
           });
       } else {
         if (this.debug)
-          console.warn("Input: this browser dont supported clipboard");
+          console.warn(
+            "Input: the browser doesn't support writing to the copy buffer"
+          );
       }
     }
   }
@@ -170,11 +172,13 @@ export class Input {
             console.warn("Input: value was successfully inserted");
         })
         .catch((err) => {
-          if (this.debug) console.warn("Input: read copy text error", err);
+          if (this.debug) console.error("Input: copy error", err);
         });
     } else {
       if (this.debug)
-        console.warn("Input: this browser dont supported clipboard");
+        console.warn(
+          "Input: the browser doesn't  support reading from copy buffer"
+        );
     }
   }
 
@@ -192,3 +196,5 @@ export class Input {
     document.removeEventListener("click", this.onClickHandler, true);
   }
 }
+
+export default Input;
