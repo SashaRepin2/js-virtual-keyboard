@@ -185,7 +185,7 @@ class Keyboard {
 
     // Create input observer
     const { initInput, isFixedInput } = this.inputOptions;
-    this.inputObserver = new Input(initInput, isFixedInput);
+    this.inputObserver = new Input({ initInput, isFixedInput });
 
     // Create keyboard panel
     const { isCanClose, isCanHide } = this.panelOptions;
@@ -254,15 +254,15 @@ class Keyboard {
    * @param {Array} buttons
    * @param {Node} parentDOM
    */
-  createButtons(buttons, parentNode) {
+  createButtons(buttons, parentDOM) {
     for (const button of buttons) {
-      const btn = new Button(
-        parentNode,
-        button.value,
-        button.shift,
-        button.type,
-        this.onKeyDownHanlder
-      );
+      const btn = new Button({
+        parentDOM,
+        defaultValue: button.value,
+        shiftValue: button.shift,
+        type: button.type,
+        callback: this.onKeyDownHanlder,
+      });
 
       this.buttons.push(btn);
     }

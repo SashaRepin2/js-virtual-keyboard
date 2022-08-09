@@ -85,12 +85,6 @@ class Button {
     if (this.buttonDOM && this.shiftValue) {
       this.buttonDOM.textContent = this.getCurrentButtonValue(isShiftOrCaps);
     }
-
-    // if (this.type === BUTTON_TYPES.SHIFT && isShiftOrCaps) {
-    //   this.buttonDOM.classList.add("keyboard-btn--active");
-    // } else {
-    //   this.buttonDOM.classList.remove("keyboard-btn--active");
-    // }
   }
 
   render() {
