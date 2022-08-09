@@ -1,5 +1,14 @@
 import BUTTON_TYPES from "../../../utils/buttonTypes";
 
+const defaultButtonOptions = {
+  parentDOM: null,
+  defaultValue: "",
+  shiftValue: "",
+  type: BUTTON_TYPES.DEFAULT,
+  callback: null,
+  isShiftOrCaps: false,
+};
+
 /**
  * The keyboard button class.
  * Contain info about:
@@ -24,14 +33,14 @@ class Button {
   // Callbacks
   onKeyClickCallback;
 
-  constructor(
-    parentDOM,
-    defaultValue,
-    shiftValue,
+  constructor({
+    parentDOM = null,
+    defaultValue = "",
+    shiftValue = "",
     type = BUTTON_TYPES.DEFAULT,
-    callback,
-    isShiftOrCaps = false
-  ) {
+    callback = null,
+    isShiftOrCaps = false,
+  } = defaultButtonOptions) {
     this.parentDOM = parentDOM;
     this.defaultValue = defaultValue;
     this.shiftValue = shiftValue;

@@ -1,6 +1,6 @@
 import "./styles/index.scss";
-import keyboardConfig from "./utils/keyboardConfig";
 import Keyboard from "./components/Keyboard/Keyboard";
+import keyboardConfig from "./utils/keyboardConfig";
 
 const root = document.getElementById("root");
 const inputContainer = document.getElementsByClassName("container")[0];
@@ -15,19 +15,18 @@ const inputEl1 = document.createElement("textarea");
 inputEl1.id = "testInput1";
 inputContainer.appendChild(inputEl1);
 
+// Example config
 const keyboardOptions = {
-  panel: { isCanHide: true, isCanClose: true },
-  input: { initInput: inputEl, isFixedInput: false },
+  keyboardKeysConfig: keyboardConfig,
+  inputOptions: { initInput: inputEl, isFixedInput: true },
+  panelOptions: { isCanHide: true, isCanClose: false },
 };
 
 // Create keyboard
 let start = performance.now();
-const keyboard = new Keyboard(
-  root,
-  keyboardConfig,
-  keyboardOptions.panel,
-  keyboardOptions.input,
-  true
-);
+
+// Without any parameters
+const keyboard = new Keyboard();
+
 let end = performance.now();
 console.log("Time (milliseconds:microseconds):", end - start);

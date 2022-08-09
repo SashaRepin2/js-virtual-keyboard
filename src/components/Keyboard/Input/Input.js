@@ -1,3 +1,4 @@
+const InputDefaultOptions = { input: null, isFixedInput: false, debug: true };
 class Input {
   input;
   isFixedInput;
@@ -5,7 +6,11 @@ class Input {
   endCaretPos;
   debug;
 
-  constructor(input = null, isFixedInput = false, debug = true) {
+  constructor({
+    input = null,
+    isFixedInput = false,
+    debug = true,
+  } = InputDefaultOptions) {
     this.startCaretPos = 0;
     this.endCaretPos = 0;
     this.input = input;

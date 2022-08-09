@@ -4,8 +4,10 @@ import Input from "./Input/Input";
 import Panel from "./Panel/Panel";
 
 import "./Keyboard.scss";
+import keyboardConfig from "../../utils/keyboardConfig";
 
 const defaultOptions = {
+  keyboardParentDOM: document.body,
   panelOptions: { isCanHide: true, isCanClose: true },
   inputOptions: { initInput: null, isFixedInput: false },
   debug: true,
@@ -38,14 +40,23 @@ class Keyboard {
 
   debug;
 
-  constructor(
-    keyboardParentDOM,
-    keyboardKeysConfig,
-    panelOptions = defaultOptions.panelOptions,
-    inputOptions = defaultOptions.inputOptions,
-    debug = defaultOptions.debug
-  ) {
+  constructor({
+    keyboardParentDOM = defaultOptions.keyboardParentDOM,
+    keyboardKeysConfig = keyboardConfig,
+    panelOptions: {
+      isCanHide = true,
+      isCanClose = true,
+    } = defaultOptions.panelOptions,
+    inputOptions: {
+      initInput = null,
+      isFixedInput = false,
+    } = defaultOptions.inputOptions,
+    debug = defaultOptions.debug,
+  } = defaultOptions) {
     if (typeof window === "undefined") return;
+
+    console.log({ isCanHide, isCanClose });
+    console.log({ initInput, isFixedInput });
 
     // Keyboard states
     this.isShifted = false;
@@ -57,8 +68,8 @@ class Keyboard {
     this.keyboardParentDOM = keyboardParentDOM;
     this.keyboardKeysConfig = keyboardKeysConfig;
 
-    this.panelOptions = panelOptions;
-    this.inputOptions = inputOptions;
+    this.panelOptions = { isCanHide, isCanClose };
+    this.inputOptions = { initInput, isFixedInput };
     this.debug = debug;
 
     // Binds func
