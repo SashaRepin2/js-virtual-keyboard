@@ -8,4 +8,5 @@
 <li>Keyboard: add support page up/down btn // completed</li>
 <li>Buttons: Add display active func buttons such as Caps, Shift // uncompleted</li>
 <li>Input: Change constructor arguments // completed</li>
+<li>Button: change class // uncomplete<li>
 </ul>

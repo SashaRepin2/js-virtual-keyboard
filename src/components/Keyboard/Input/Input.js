@@ -18,15 +18,14 @@ class Input {
     this.debug = debug;
 
     // binds (need create func that will bind)
-    this.onClickHandler = this.onClickHandler.bind(this);
+    this.onFocusHandler = this.onFocusHandler.bind(this);
     this.getCaretPosition = this.getCaretPosition.bind(this);
     this.setCaretPosition = this.setCaretPosition.bind(this);
 
     this.render();
   }
 
-  // Warn: when 2 or more keyboards - the event is called several times // Need to resolve. One handler for all keyboards???
-  onClickHandler(event) {
+  onFocusHandler(event) {
     const focusedEl = event.target;
 
     if (
@@ -188,7 +187,9 @@ class Input {
   }
 
   render() {
-    document.addEventListener("click", this.onClickHandler, true);
+    // Warn: when 2 or more keyboards - the event is called several times
+    // document.addEventListener("click", this.onClickHandler, true);
+    document.addEventListener("focus", this.onFocusHandler, true);
   }
 
   destroy() {
@@ -198,7 +199,7 @@ class Input {
     this.endCaretPos = null;
     this.isFixedInput = null;
 
-    document.removeEventListener("click", this.onClickHandler, true);
+    document.removeEventListener("click", this.onFocusHandler, true);
   }
 }
 
