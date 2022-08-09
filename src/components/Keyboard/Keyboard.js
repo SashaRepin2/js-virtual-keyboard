@@ -9,7 +9,7 @@ import keyboardConfig from "../../utils/keyboardConfig";
 const defaultOptions = {
   keyboardParentDOM: document.body,
   panelOptions: { isCanHide: true, isCanClose: true },
-  inputOptions: { initInput: null, isFixedInput: false },
+  inputOptions: { input: null, isFixedInput: false },
   debug: true,
 };
 
@@ -48,15 +48,12 @@ class Keyboard {
       isCanClose = true,
     } = defaultOptions.panelOptions,
     inputOptions: {
-      initInput = null,
+      input = null,
       isFixedInput = false,
     } = defaultOptions.inputOptions,
     debug = defaultOptions.debug,
   } = defaultOptions) {
     if (typeof window === "undefined") return;
-
-    console.log({ isCanHide, isCanClose });
-    console.log({ initInput, isFixedInput });
 
     // Keyboard states
     this.isShifted = false;
@@ -69,7 +66,7 @@ class Keyboard {
     this.keyboardKeysConfig = keyboardKeysConfig;
 
     this.panelOptions = { isCanHide, isCanClose };
-    this.inputOptions = { initInput, isFixedInput };
+    this.inputOptions = { input, isFixedInput };
     this.debug = debug;
 
     // Binds func
@@ -110,7 +107,7 @@ class Keyboard {
         break;
       case BUTTON_TYPES.ESC:
         // reset input
-        this.inputObserver.input = null;
+        this.inputObserver.resetInput();
         break;
       case BUTTON_TYPES.SPACE:
         this.inputObserver.addValue(" ");
@@ -184,8 +181,8 @@ class Keyboard {
     keyboardRootEl.classList.add("keyboard");
 
     // Create input observer
-    const { initInput, isFixedInput } = this.inputOptions;
-    this.inputObserver = new Input({ initInput, isFixedInput });
+    const { input, isFixedInput } = this.inputOptions;
+    this.inputObserver = new Input({ input, isFixedInput });
 
     // Create keyboard panel
     const { isCanClose, isCanHide } = this.panelOptions;

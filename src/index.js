@@ -18,7 +18,7 @@ inputContainer.appendChild(inputEl1);
 // Example config
 const keyboardOptions = {
   keyboardKeysConfig: keyboardConfig,
-  inputOptions: { initInput: inputEl, isFixedInput: true },
+  inputOptions: { input: inputEl, isFixedInput: true },
   panelOptions: { isCanHide: true, isCanClose: false },
 };
 

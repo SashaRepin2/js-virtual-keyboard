@@ -1,4 +1,4 @@
-const InputDefaultOptions = { input: null, isFixedInput: false, debug: true };
+const defaultInputOptions = { input: null, isFixedInput: false, debug: true };
 class Input {
   input;
   isFixedInput;
@@ -10,7 +10,7 @@ class Input {
     input = null,
     isFixedInput = false,
     debug = true,
-  } = InputDefaultOptions) {
+  } = defaultInputOptions) {
     this.startCaretPos = 0;
     this.endCaretPos = 0;
     this.input = input;
@@ -21,6 +21,9 @@ class Input {
     this.onFocusHandler = this.onFocusHandler.bind(this);
     this.getCaretPosition = this.getCaretPosition.bind(this);
     this.setCaretPosition = this.setCaretPosition.bind(this);
+
+    if (this.debug)
+      console.warn("Input options:", { input, isFixedInput, debug });
 
     this.render();
   }
@@ -83,6 +86,10 @@ class Input {
 
     this.startCaretPos = start;
     this.endCaretPos = end;
+  }
+
+  resetInput() {
+    if (!this.isFixedInput) this.input = null;
   }
 
   // Supported emoji delete
