@@ -1,3 +1,5 @@
+import { defaultPanelOptions } from "../../../consts/defaultOptions";
+
 /**
  * The keyboard panel class
  */
@@ -13,27 +15,22 @@ class Panel {
 
   closeCallback;
 
-  constructor(
-    parentNode,
+  constructor({
+    parentNode = null,
     isCanClose = true,
     isCanHide = true,
-    closeCallback,
-    debug = true
-  ) {
+    closeCallback = null,
+    debug = true,
+  } = defaultPanelOptions) {
     this.parentNode = parentNode;
-    this.panelNode = null;
-    this.closeBtnEl = null;
-    this.hideBtnEl = null;
-
     this.debug = debug;
-    this.isCanClose = isCanClose;
     this.isCanHide = isCanHide;
+    this.isCanClose = isCanClose;
+    this.closeCallback = closeCallback;
 
     // binds
     this.hideWindow = this.hideWindow.bind(this);
     this.closeWindow = this.closeWindow.bind(this);
-
-    this.closeCallback = closeCallback;
 
     if (this.parentNode) {
       this.render();

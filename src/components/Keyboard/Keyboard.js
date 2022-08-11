@@ -1,17 +1,9 @@
-import BUTTON_TYPES from "../../utils/buttonTypes";
+import { defaultKeyboardOptions } from "../../consts/defaultKeyboardOptions";
+import BUTTON_TYPES from "../../consts/buttonTypes";
 import Button from "./Button/Button";
 import Input from "./Input/Input";
 import Panel from "./Panel/Panel";
-
 import "./Keyboard.scss";
-import keyboardConfig from "../../utils/keyboardConfig";
-
-const defaultOptions = {
-  keyboardParentDOM: document.body,
-  panelOptions: { isCanHide: true, isCanClose: true },
-  inputOptions: { input: null, isFixedInput: false },
-  debug: true,
-};
 
 /**
  * The keybaord class (root class)
@@ -41,18 +33,18 @@ class Keyboard {
   debug;
 
   constructor({
-    keyboardParentDOM = defaultOptions.keyboardParentDOM,
+    keyboardParentDOM = defaultKeyboardOptions.keyboardParentDOM,
     keyboardKeysConfig = keyboardConfig,
     panelOptions: {
       isCanHide = true,
       isCanClose = true,
-    } = defaultOptions.panelOptions,
+    } = defaultKeyboardOptions.panelOptions,
     inputOptions: {
       input = null,
       isFixedInput = false,
-    } = defaultOptions.inputOptions,
-    debug = defaultOptions.debug,
-  } = defaultOptions) {
+    } = defaultKeyboardOptions.inputOptions,
+    debug = defaultKeyboardOptions.debug,
+  } = defaultKeyboardOptions) {
     if (typeof window === "undefined") return;
 
     // Keyboard states

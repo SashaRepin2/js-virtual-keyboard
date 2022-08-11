@@ -1,6 +1,6 @@
 import "./styles/index.scss";
 import Keyboard from "./components/Keyboard/Keyboard";
-import keyboardConfig from "./utils/keyboardConfig";
+import keyboardConfig from "./consts/keyboardConfig";
 
 const root = document.getElementById("root");
 const inputContainer = document.getElementsByClassName("container")[0];
