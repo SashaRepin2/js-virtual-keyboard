@@ -1,13 +1,5 @@
-import BUTTON_TYPES from "../../../utils/buttonTypes";
-
-const defaultButtonOptions = {
-  parentDOM: null,
-  defaultValue: "",
-  shiftValue: "",
-  type: BUTTON_TYPES.DEFAULT,
-  callback: null,
-  isShiftOrCaps: false,
-};
+import BUTTON_TYPES from "../../../consts/buttonTypes";
+import { defaultButtonOptions } from "../../../consts/defaultOptions";
 
 /**
  * The keyboard button class.
